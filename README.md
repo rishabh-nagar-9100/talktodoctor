@@ -1,87 +1,129 @@
-# 🩺 TalkToDoctor — Voice-First AI Medical Intake System
+# 🩺 TalkToDoctor — Enterprise AI Medical Intake & Queue System
 
-A voice-first AI medical intake system that helps patients describe their symptoms using natural speech, and presents a structured summary to their doctor.
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Framework-green.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+[![Supabase](https://img.shields.io/badge/Database-Supabase-FF4B4B.svg)](https://supabase.com/)
+[![License](https://img.shields.io/badge/License-Private-lightgrey.svg)](#)
 
-**Core Rule: The AI NEVER diagnoses. It ONLY assists, extracts, and summarizes. The doctor is the final authority.**
+A production-ready, voice-first AI medical intake system designed for high-load clinics and hospitals. TalkToDoctor streamlines patient documentation by converting natural multilingual speech into structured, actionable clinical insights.
 
-## Architecture
+> **CRITICAL RULE**: The AI NEVER diagnoses. It ONLY assists, extracts, and summarizes. The doctor is the final authority in all clinical decisions.
 
-```
-Voice Input → Whisper API (Transcription) → GPT-4 (Extraction) → Structured JSON → Doctor Dashboard
-```
+---
 
-- **Frontend**: React.js (Vite)
-- **Backend**: FastAPI (Python)
-- **AI/NLP**: OpenAI GPT-4o
-- **Speech**: OpenAI Whisper API
+## 🚀 Key Features
 
-## Quick Start
+### 1. 🎙️ Multilingual Voice-First Intake
+- **Zero-Type Interface**: Patients interact solely via voice, making it accessible for all literacy levels.
+- **Natural Language Support**: Full support for Hindi, English, Tamil, Telugu, and more.
+- **AI-Guided Conversation**: Dynamic follow-up questions to ensure a complete symptom profile is captured.
 
-### Prerequisites
+### 2. 🏥 Production-Grade Queue Management
+- **Token Generation**: Automated clinic tokens (e.g., `G-01`, `U-05`) assigned based on urgency.
+- **Smart Triage**: Deterministic risk calculation flags critical symptoms (Chest Pain, Shortness of Breath) for immediate attention.
+- **SMS Notifications**: Automated SMS alerts for token confirmation and "Next Turn" notifications.
 
+### 3. 👨‍⚕️ Clinical Assist Dashboard
+- **Instant Summaries**: Doctors scan patient cases in <10 seconds with high-fidelity structured data.
+- **Risk Assessment**: Deterministic scoring (Independent of LLM) for clinical safety.
+- **AI Follow-up Suggestions**: Targeted questions generated per-patient to guide the consultation.
+- **EHR Integration**: Mock FHIR/HL7 export for integration with hospital information systems.
+
+### 4. 📊 Analytics & Insights
+- **Clinical Trends**: Real-time tracking of top symptoms and severity distribution.
+- **Efficiency Metrics**: Estimated physician time saved and patient throughput volume.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | React (Vite), Lucide Icons, CSS3 (Glassmorphism) |
+| **Backend** | FastAPI (Python), Uvicorn |
+| **Database** | Supabase (PostgreSQL) |
+| **Speech-to-Text** | OpenAI Whisper (via Groq) |
+| **Clinical Engine** | Llama 3.3 70B / GPT-4o (via Groq) |
+| **TTS** | OpenAI TTS-1 |
+
+---
+
+## 📋 Database Schema (Supabase)
+
+The system uses a relational PostgreSQL schema designed for PHI security and scalability:
+- `patients`: Demographics and contact info.
+- `intake_sessions`: Lifecycle of individual patient interactions.
+- `conversation_turns`: Full transcript (Patient + AI).
+- `medical_summaries`: Structured symptoms, history, and risk levels.
+- `queue_items`: Real-time status (`WAITING`, `IN_CONSULTATION`, `COMPLETED`).
+
+---
+
+## ⚙️ Quick Start
+
+### 1. Prerequisites
 - Python 3.10+
-- Node.js 20+
-- OpenAI API key
+- Node.js 18+
+- [Supabase Project](https://supabase.com/) (Run the provided SQL in the SQL Editor)
+- [Groq API Key](https://console.groq.com/)
 
-### Backend
-
+### 2. Backend Setup
 ```bash
 cd backend
 pip install -r requirements.txt
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
-
-# Run the server
-cd ..
-uvicorn backend.main:app --reload --port 8000
+# Update .env with your GROQ_API_KEY, SUPABASE_URL, and SUPABASE_KEY
+python -m uvicorn backend.main:app --reload
 ```
 
-### Frontend
-
+### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173 in your browser.
+---
 
-## API Endpoints
+## 🔌 API Reference
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/intake` | Upload audio → transcribe → extract → JSON |
-| `GET` | `/api/intake/latest` | Get the most recent intake record |
-| `GET` | `/api/intake/all` | Get all intake records |
-| `GET` | `/health` | Health check |
+| Category | Method | Endpoint | Description |
+|---|---|---|---|
+| **Intake** | `POST` | `/api/conversation/start` | Initialize new session |
+| **Intake** | `POST` | `/api/conversation/respond` | Process voice turn |
+| **Queue** | `POST` | `/api/queue/join` | Join clinic queue |
+| **Queue** | `GET` | `/api/queue/live` | Live dashboard feed |
+| **Doctor** | `POST` | `/api/doctor/analyze/{id}` | Generate clinical intelligence |
+| **Analytics** | `GET` | `/api/analytics/dashboard` | System-wide metrics |
 
-## Project Structure
+---
 
-```
+## 📂 Project Structure
+
+```text
 talktodoctor/
 ├── backend/
-│   ├── main.py              # FastAPI entry point
-│   ├── routers/intake.py     # API endpoints
-│   ├── services/
-│   │   ├── transcription.py  # Whisper integration
-│   │   └── extraction.py     # GPT-4 extraction
-│   ├── prompts/
-│   │   └── system_prompt.py  # Medical intake prompt
-│   ├── models/schemas.py     # Pydantic models
-│   └── requirements.txt
+│   ├── db/               # Supabase Client
+│   ├── models/           # Pydantic Schemas
+│   ├── routers/          # Modular API Routes (Intake, Queue, Doctor)
+│   ├── services/         # Business Logic (Transcription, Extraction, Queue)
+│   └── prompts/          # Clinical Prompt Engineering
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── PatientKiosk.jsx    # Voice recording UI
-│   │   │   ├── DoctorDashboard.jsx # Summary display
-│   │   │   └── Header.jsx
-│   │   ├── services/api.js
-│   │   ├── App.jsx
-│   │   └── index.css
-│   └── package.json
-└── README.md
+│   │   ├── components/   # PatientKiosk, DoctorDashboard, Analytics
+│   │   └── services/     # API Integration
+└── .env                  # Global Configuration
 ```
 
-## License
+---
 
-Private — Not for clinical use without physician verification.
+## 🔒 Security & Privacy
+- **Row Level Security (RLS)**: Enforced at the Supabase layer to ensure data isolation.
+- **No Local Storage**: Sensitive medical data is never stored on the local client.
+- **Audit Logs**: Every status change in the queue is timestamped and recorded.
+
+---
+
+## 📜 License
+Private. Developed for healthcare optimization. Not for independent clinical diagnosis.
