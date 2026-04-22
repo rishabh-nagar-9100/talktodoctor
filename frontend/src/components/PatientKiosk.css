@@ -1,0 +1,441 @@
+/*
+ * PatientKiosk — Conversational voice intake interface styles (Phase 2)
+ *
+ * Redesigned for multi-turn conversations with:
+ * - Chat bubble history
+ * - AI speaking indicator / waveform
+ * - Turn progress counter
+ * - Confirmation card
+ */
+
+.kiosk {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-lg) var(--space-xl);
+  animation: fadeIn 0.5s ease;
+}
+
+/* ── Turn Progress ── */
+.turn-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-md);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.turn-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.turn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-subtle);
+  transition: all var(--transition-fast);
+}
+
+.turn-dot.filled {
+  background: var(--accent-blue);
+  box-shadow: 0 0 6px var(--accent-blue-glow);
+}
+
+.turn-dot.active {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green-glow);
+  animation: float 1.5s ease-in-out infinite;
+}
+
+/* ── Chat Area ── */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 200px;
+  max-height: 50vh;
+  scroll-behavior: smooth;
+}
+
+/* ── Chat Bubbles ── */
+.chat-bubble {
+  max-width: 85%;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  animation: fadeIn 0.3s ease;
+  position: relative;
+}
+
+.chat-bubble.ai {
+  align-self: flex-start;
+  background: linear-gradient(135deg, hsla(200, 80%, 30%, 0.4), hsla(220, 60%, 25%, 0.5));
+  border: 1px solid hsla(200, 100%, 55%, 0.2);
+  border-bottom-left-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+.chat-bubble.patient {
+  align-self: flex-end;
+  background: linear-gradient(135deg, hsla(270, 40%, 30%, 0.4), hsla(250, 40%, 25%, 0.5));
+  border: 1px solid hsla(270, 70%, 65%, 0.2);
+  border-bottom-right-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+.bubble-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-xs);
+  opacity: 0.6;
+}
+
+.bubble-label.ai-label {
+  color: var(--accent-blue);
+}
+
+.bubble-label.patient-label {
+  color: var(--accent-purple);
+}
+
+/* ── AI Speaking Indicator ── */
+.ai-speaking {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  align-self: flex-start;
+  padding: var(--space-md) var(--space-lg);
+  background: linear-gradient(135deg, hsla(200, 80%, 30%, 0.3), hsla(220, 60%, 25%, 0.3));
+  border: 1px solid hsla(200, 100%, 55%, 0.15);
+  border-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-sm);
+  color: var(--accent-blue);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+
+.waveform-bar {
+  width: 3px;
+  background: var(--accent-blue);
+  border-radius: 2px;
+  animation: waveform-pulse 1s ease-in-out infinite;
+}
+
+.waveform-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+.waveform-bar:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+.waveform-bar:nth-child(3) { height: 12px; animation-delay: 0.3s; }
+.waveform-bar:nth-child(4) { height: 20px; animation-delay: 0.45s; }
+.waveform-bar:nth-child(5) { height: 10px; animation-delay: 0.6s; }
+
+@keyframes waveform-pulse {
+  0%, 100% { transform: scaleY(0.4); }
+  50%      { transform: scaleY(1); }
+}
+
+/* ── Input Area (bottom) ── */
+.input-area {
+  padding: var(--space-lg) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-md);
+}
+
+.input-status {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+  min-height: 1.5em;
+}
+
+.status-listening {
+  color: var(--accent-blue);
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-blue));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 2s linear infinite;
+}
+
+.status-recording { color: var(--accent-red); }
+.status-processing {
+  color: var(--accent-blue);
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-blue));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ── Mic Button (compact version for chat UI) ── */
+.mic-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.mic-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--border-subtle);
+  background: linear-gradient(145deg, var(--bg-card), var(--bg-secondary));
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.mic-btn:hover:not(:disabled) {
+  transform: scale(1.08);
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.mic-btn.recording {
+  background: linear-gradient(145deg, hsl(0, 70%, 20%), hsl(0, 70%, 15%));
+  border-color: var(--accent-red);
+  box-shadow: var(--shadow-glow-red);
+  animation: float 2s ease-in-out infinite;
+}
+
+.mic-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mic-timer {
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-red);
+  font-weight: 500;
+  min-width: 48px;
+}
+
+/* ── Confirmation Card ── */
+.confirm-card {
+  padding: var(--space-xl);
+  margin: var(--space-md) 0;
+  animation: fadeIn 0.4s ease;
+}
+
+.confirm-card h3 {
+  font-size: 1rem;
+  color: var(--accent-amber);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.confirm-summary {
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-lg);
+}
+
+.confirm-field {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-xs) 0;
+  font-size: 0.9rem;
+}
+
+.confirm-label {
+  color: var(--text-muted);
+  min-width: 100px;
+  font-weight: 500;
+}
+
+.confirm-value {
+  color: var(--text-primary);
+}
+
+.confirm-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, var(--accent-green), hsl(155, 60%, 40%));
+  color: white;
+  box-shadow: 0 4px 16px var(--accent-green-glow);
+}
+
+.btn-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-green);
+}
+
+.btn-clarify {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-clarify:hover {
+  color: var(--text-primary);
+  border-color: var(--border-glow);
+}
+
+/* ── Completion Card ── */
+.complete-card {
+  text-align: center;
+  padding: var(--space-2xl);
+  margin: var(--space-md) 0;
+  animation: fadeIn 0.5s ease;
+}
+
+.complete-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+}
+
+.complete-card h2 {
+  color: var(--accent-green);
+  margin-bottom: var(--space-sm);
+}
+
+.complete-card p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+/* ── Start Screen ── */
+.start-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-3xl) 0;
+}
+
+.start-screen h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: var(--space-sm);
+  background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.start-screen p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: var(--space-2xl);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.start-btn {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid var(--border-subtle);
+  background: linear-gradient(145deg, var(--bg-card), var(--bg-secondary));
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  margin-bottom: var(--space-xl);
+}
+
+.start-btn:hover {
+  transform: scale(1.05);
+  border-color: var(--accent-blue);
+  box-shadow: var(--shadow-glow-blue);
+}
+
+.start-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: var(--space-md);
+}
+
+/* ── Error Banner ── */
+.error-banner {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--accent-red-glow);
+  border: 1px solid hsla(0, 80%, 60%, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--accent-red);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  animation: fadeIn 0.3s ease;
+}
+
+/* ── Language Badge ── */
+.lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 2px var(--space-sm);
+  background: hsla(200, 100%, 55%, 0.1);
+  border: 1px solid hsla(200, 100%, 55%, 0.2);
+  border-radius: var(--radius-full);
+  font-size: 0.65rem;
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .kiosk {
+    padding: var(--space-md);
+  }
+
+  .chat-area {
+    max-height: 40vh;
+  }
+
+  .chat-bubble {
+    max-width: 92%;
+  }
+
+  .start-btn {
+    width: 120px;
+    height: 120px;
+    font-size: 2.5rem;
+  }
+}
